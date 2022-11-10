@@ -1,7 +1,4 @@
 package HW9.List;
-
-import HW9.List.MyList;
-
 import java.util.Arrays;
 
 public class MyArrayList implements MyList {
