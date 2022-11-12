@@ -1,7 +1,7 @@
-package HW13;
+package HW13.model;
 
 public class User {
-    private Integer id;
+    private int id;
     private String name;
     private String UserName;
     private String email;
@@ -11,7 +11,7 @@ public class User {
     private Company company;
 
 
-    public User(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

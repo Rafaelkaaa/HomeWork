@@ -1,4 +1,4 @@
-package HW13;
+package HW13.model;
 
 public class Company {
 }
