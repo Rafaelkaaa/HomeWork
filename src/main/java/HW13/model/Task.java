@@ -1,10 +1,10 @@
 package HW13.model;
 
-public class Post {
+public class Task {
     int userId;
     int id;
     String title;
-    String body;
+    boolean completed;
 
     public int getUserId() {
         return userId;
@@ -30,11 +30,11 @@ public class Post {
         this.title = title;
     }
 
-    public String getBody() {
-        return body;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

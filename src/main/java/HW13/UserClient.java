@@ -1,16 +1,22 @@
 package HW13;
 
+import HW13.model.Task;
+import HW13.model.User;
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collections;
+import java.util.List;
 
 class UserClient {
     private final static HttpClient client = HttpClient.newHttpClient();
-    static String uri;
-    static HttpRequest request;
+     String uri;
+    HttpRequest request;
 
 
     public UserClient(String uri) throws URISyntaxException {
@@ -18,7 +24,7 @@ class UserClient {
     }
 
 
-    public static String addNewUser() throws IOException, InterruptedException {
+    public String addNewUser() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .POST(HttpRequest.BodyPublishers.noBody())
@@ -27,7 +33,7 @@ class UserClient {
         return response.body();
     }
 
-    public static String updateUserByID(int id) throws IOException, InterruptedException {
+    public String updateUserByID(int id) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create(uri + "/" + id))
                 .method("PATCH", HttpRequest.BodyPublishers.ofString(String.valueOf(id)))
@@ -36,7 +42,7 @@ class UserClient {
         return response.body();
     }
 
-    public static int deleteByUserId(int id) throws IOException, InterruptedException {
+    public int deleteByUserId(int id) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create(uri + "/" + id))
                 .DELETE()
@@ -45,7 +51,7 @@ class UserClient {
         return response.statusCode();
     }
 
-    public static String getAllUsers() throws IOException, InterruptedException {
+    public String getAllUsers() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .GET()
@@ -54,18 +60,17 @@ class UserClient {
         return response.body();
     }
 
-    public static String getUserById(int id) throws IOException, InterruptedException {
+    public String getUserById(int id) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create((uri + "/" + id)))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("getUserById body() = " + response.body());
         return response.body();
     }
 
 
-    public static String getUsersByUserName(String userName) throws IOException, InterruptedException {
+    public String getUsersByUserName(String userName) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create((uri + "/users?username=" + userName)))
                 .GET()
@@ -74,17 +79,33 @@ class UserClient {
         return response.body();
     }
 
-    public static String getPostsByUserId(int id) throws IOException, InterruptedException {
+    public Integer getBiggestPostIDByUserId(int id) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create((uri + "/" + id + "/posts")))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        List <Integer> listPostIds = Utils.convertResponseStringToListPostIds(response.body());
+        return Collections.max(listPostIds);
+    }
+    public void getCommentsForLastPostByUserId(int userId) throws IOException, InterruptedException {
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(("https://jsonplaceholder.typicode.com/posts/" + getBiggestPostIDByUserId(userId) + "/comments")))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Utils.writeCommentsToFileByUserID(response.body(), userId, getBiggestPostIDByUserId(userId));
     }
 
-    public static String getLastPostByUserId(int id) throws IOException, InterruptedException {
-        return null;
+    public String getAllUncompletedTask (int id) throws IOException, InterruptedException {
+        request = HttpRequest.newBuilder()
+                .uri(URI.create((uri + "/" + id + "/todos")))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Utils.convertResponseStringToListUncompletedTasks (response.body());
+        List<Task> listUncompletedTasks = Utils.convertResponseStringToListUncompletedTasks (response.body());
+        return new Gson().toJson(listUncompletedTasks);
     }
 
 }
