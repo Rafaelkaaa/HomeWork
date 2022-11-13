@@ -4,7 +4,7 @@ public class Task {
     int userId;
     int id;
     String title;
-    boolean completed;
+    boolean isCompleted;
 
     public int getUserId() {
         return userId;
@@ -31,10 +31,10 @@ public class Task {
     }
 
     public boolean isCompleted() {
-        return completed;
+        return isCompleted;
     }
 
     public void setCompleted(boolean completed) {
-        this.completed = completed;
+        this.isCompleted = completed;
     }
 }
