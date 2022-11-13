@@ -24,10 +24,10 @@ class UserClient {
     }
 
 
-    public String addNewUser() throws IOException, InterruptedException {
+    public String addNewUser(User user) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
-                .POST(HttpRequest.BodyPublishers.noBody())
+                .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(user)))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
@@ -90,7 +90,8 @@ class UserClient {
     }
     public void getCommentsForLastPostByUserId(int userId) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()
-                .uri(URI.create(("https://jsonplaceholder.typicode.com/posts/" + getBiggestPostIDByUserId(userId) + "/comments")))
+                .uri(URI.create(("https://jsonplaceholder.typicode.com/posts/"
+                        + getBiggestPostIDByUserId(userId) + "/comments")))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
