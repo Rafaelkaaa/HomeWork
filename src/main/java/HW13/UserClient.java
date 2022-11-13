@@ -1,5 +1,6 @@
 package HW13;
 
+import HW13.model.Post;
 import HW13.model.Task;
 import HW13.model.User;
 import com.google.gson.Gson;
@@ -85,8 +86,15 @@ class UserClient {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        List <Integer> listPostIds = Utils.convertResponseStringToListPostIds(response.body());
-        return Collections.max(listPostIds);
+        List <Post> listPost = Utils.convertResponseStringToListPostIds(response.body());
+        int biggestId = 0;
+        for (Post post :
+                listPost) {
+            if (post.getId()>biggestId){
+                biggestId = post.getId();
+            }
+        }
+        return biggestId;
     }
     public void getCommentsForLastPostByUserId(int userId) throws IOException, InterruptedException {
         request = HttpRequest.newBuilder()

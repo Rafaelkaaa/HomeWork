@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
-    public static List<Integer> convertResponseStringToListPostIds(String responseString) {
+    public static List<Post> convertResponseStringToListPostIds(String responseString) {
         JsonArray jsonArray = JsonParser.parseString(responseString).getAsJsonArray();
-        List<Integer> listPostIds = new ArrayList();
+        List<Post> listPost = new ArrayList();
         int count = 0;
 
         while (count<jsonArray.size()) {
             JsonObject jsonObject = jsonArray.get(count++).getAsJsonObject();
-            listPostIds.add(createUserFromJson(jsonObject).getId());
+            listPost.add(createUserFromJson(jsonObject));
         }
-        return listPostIds;
+        return listPost;
     }
 
 
